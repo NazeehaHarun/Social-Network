@@ -48,13 +48,38 @@ def getleastpopular():
 #Function to return the number of common friends between two users
 def commonfriends(profile1, profile2):
     
-    commonfriends = 0
+    common = 0
     
     for friends in profile1[2]:
         for otherfriends in profile2[2]:
             if friends == otherfriends:
-                commonfriends +=1
-    return commonfriends
+                common +=1
+    return common
+
+#Function that recommends friends to an user based on common friends
+def recommendfriendfor(name):
+
+    count = 0
+    maxFreq = 0
+    recommendedFriend = None
+
+    #Loops through all the names of the user to find the user that matches with the passed in parameter
+    for users in network:
+        if users[0] == name:
+            nameUsers = users
+            break
+            
+    #Loops and counts the number of common friends 
+    #returns the name of the person that has the highest number of common friends with the user
+    for users in network:
+        if users[0] != name:
+            count = commonfriends(nameUsers,users)
+            if count > maxFreq:
+                maxFreq = count
+                recommendedFriend = users[0]
+    return recommendedFriend
+    
+        
                 
     
 #Calling functions for testing purposes
@@ -62,5 +87,5 @@ print(getnames())
 print(getmostpopular())    
 print(getleastpopular())
 print(commonfriends(['Frank', [13, 54], ['Christopher', 'Jasmine', 'Felipa'], ['gaming', 'cooking', 'hiking', 'hockey', 'fishing']],['Felipa', [95, 0], ['Frank', 'Christopher', 'Grace', 'Paula', 'James'], ['photography', 'cooking', 'gaming', 'basketball']]))
-            
+print(recommendfriendfor("James"))           
 
