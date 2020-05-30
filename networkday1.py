@@ -7,8 +7,9 @@ largenetwork = [['Charles', [66, 4], ['April', 'Nancy', 'Donna', 'Valerie', 'Sue
 network = smallnetwork
 
 
-#Function to return a list of all the names in the network
-def getnames():
+#Function to return a list of all the user names in the network
+#parameters : none
+def getUserNames():
     #Creating a new list called namelist to which the name of the users will be added
     namelist =[]
     
@@ -18,38 +19,53 @@ def getnames():
     return namelist
 
 #Function to return the name of the user with highest number of friends
-def getmostpopular():
+#parameters: none
+def getMostPopularUser():
 
     highest = None
     
+    #Looping through each list in network
     for lists in network:
         count = 0
+        #Looping through the friends list inside the main list
+        #increasing the count by 1
         for friends in lists[2]:
             count+=1
+        #Comparing and storing the highest count
+        #Storing the name of the user with highest number of friends
         if highest ==None or int(count) > int(highest):
             highest = count
             mostpopular= lists[0]
     return mostpopular
     
 #Function to return the name of the user with lowest number of friends
-def getleastpopular():
+#parameter: none
+def getLeastPopularUser():
 
     smallest = None
     
+    #Looping through each list in the network
     for lists in network:
         count =0
+        #Looping through the friends list inside the main list
+        #increasing the count by 1
         for friends in lists[2]:
             count+=1
+        #Comparing and storing the lowest count
+        #Storing the name of the user with lowest number of friends
         if smallest == None or int(count)<int(smallest):
             smallest = count
             leastpopular = lists[0]
     return leastpopular
     
 #Function to return the number of common friends between two users
-def commonfriends(profile1, profile2):
+#parameters: list
+def mutualFriends(profile1, profile2):
     
     common = 0
     
+    #Loops through each friend in the list of one user and compares to friends of the other user
+    #If the two friends are the same, increases common by 1
     for friends in profile1[2]:
         for otherfriends in profile2[2]:
             if friends == otherfriends:
@@ -57,7 +73,8 @@ def commonfriends(profile1, profile2):
     return common
 
 #Function that recommends friends to an user based on common friends
-def recommendfriendfor(name):
+#parameters: string
+def suggestFriendFor(name):
 
     count = 0
     maxFreq = 0
@@ -73,19 +90,99 @@ def recommendfriendfor(name):
     #returns the name of the person that has the highest number of common friends with the user
     for users in network:
         if users[0] != name:
-            count = commonfriends(nameUsers,users)
+            count = mutualFriends(nameUsers,users)
+            if count > maxFreq:
+                maxFreq = count
+                recommendedFriend = users[0]
+                
+    return recommendedFriend
+    
+    
+#Function to return the number of common interests between two users
+#parameters : list
+def commonInterests(profile1, profile2):
+    
+    common = 0
+    
+    #Loops through each interest in the list of one user and compares to interests of the other user
+    #If the two interests are the same, increases common by 1
+    for interests in profile1[3]:
+        for otherinterests in profile2[3]:
+            if interests == otherinterests:
+                common +=1
+    return common
+    
+#Function that recommends friends to an user based on common interests
+#parameter: string
+def recommendFriendByInterests(name):
+
+    count = 0
+    maxFreq = 0
+    recommendedFriend = None
+
+    #Loops through all the names of the user to find the user that matches with the passed in parameter
+    for users in network:
+        if users[0] == name:
+            nameUsers = users
+            break
+            
+    #Loops and counts the number of common friends 
+    #returns the name of the person that has the highest number of common friends with the user
+    for users in network:
+        if users[0] != name:
+            count = commonInterests(nameUsers,users)
             if count > maxFreq:
                 maxFreq = count
                 recommendedFriend = users[0]
     return recommendedFriend
     
+#Helper function to return the name of the user with highest number of friends
+#parameter:list
+def mostPopularUser(lists):
+
+    highest = None
+    
+    for users in lists:
+        count = 0
+        #Looping through the friends list inside the main list
+        #increasing the count by 1
+        for friends in users[2]:
+            count+=1
+        #Comparing and storing the highest count
+        #Storing the name of the user with highest number of friends
+        if highest ==None or int(count) > int(highest):
+            highest = count
+            mostpopular= users[0]
+    return mostpopular
+
+#Fuction that returns the name of the most popular person(has the most friends) and is also interested in the given interest
+#paramters: string
+def targetAdvertisement(interest):
+    
+    target = []
+    #Looping through all the users in the network
+    #Looping through the list of all their interests and comparing it to the interest passed in as paramter
+    #If the interests match, add the users to the list
+    for users in network:
+        for interests in users[3]:
+            if interests == interest:
+                target.append(users)
+    
+    #If length of the target list is greater than zero, call the mostPopularUser function
+    #This returns the name of the user with highest number of friends who also has the same interest as the passed in parameter
+    if len(target) > 0:
+        return mostPopularUser(target)
+    else:
+        return None
         
-                
     
 #Calling functions for testing purposes
-print(getnames())
-print(getmostpopular())    
-print(getleastpopular())
-print(commonfriends(['Frank', [13, 54], ['Christopher', 'Jasmine', 'Felipa'], ['gaming', 'cooking', 'hiking', 'hockey', 'fishing']],['Felipa', [95, 0], ['Frank', 'Christopher', 'Grace', 'Paula', 'James'], ['photography', 'cooking', 'gaming', 'basketball']]))
-print(recommendfriendfor("James"))           
+print(getUserNames())
+print(getMostPopularUser())    
+print(getLeastPopularUser())
+print(mutualFriends(['Frank', [13, 54], ['Christopher', 'Jasmine', 'Felipa'], ['gaming', 'cooking', 'hiking', 'hockey', 'fishing']],['Felipa', [95, 0], ['Frank', 'Christopher', 'Grace', 'Paula', 'James'], ['photography', 'cooking', 'gaming', 'basketball']]))
+print(suggestFriendFor("James"))      
+print(commonInterests(['Frank', [13, 54], ['Christopher', 'Jasmine', 'Felipa'], ['gaming', 'cooking', 'hiking', 'hockey', 'fishing']],['Felipa', [95, 0], ['Frank', 'Christopher', 'Grace', 'Paula', 'James'], ['photography', 'cooking', 'gaming', 'basketball']]))
+print(recommendFriendByInterests("Grace"))
+print(targetAdvertisement("cycling"))
 
